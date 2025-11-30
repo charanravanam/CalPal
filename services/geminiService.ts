@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { UserProfile, NutritionAnalysis } from "../types";
 
-const getNuritionSchema = (): Schema => {
+const getNutritionSchema = (): Schema => {
   return {
     type: Type.OBJECT,
     properties: {
@@ -111,7 +111,7 @@ export const analyzeMeal = async (
       },
       config: {
         responseMimeType: 'application/json',
-        responseSchema: getNuritionSchema()
+        responseSchema: getNutritionSchema()
       }
     });
 

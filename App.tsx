@@ -13,15 +13,20 @@ const App: React.FC = () => {
 
   // Load data from local storage on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem('nutria_user');
-    const savedMeals = localStorage.getItem('nutria_meals');
+    try {
+      const savedUser = localStorage.getItem('nutria_user');
+      const savedMeals = localStorage.getItem('nutria_meals');
 
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-      setView('DASHBOARD');
-    }
-    if (savedMeals) {
-      setMeals(JSON.parse(savedMeals));
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+        setView('DASHBOARD');
+      }
+      if (savedMeals) {
+        setMeals(JSON.parse(savedMeals));
+      }
+    } catch (error) {
+      console.error("Failed to load local data:", error);
+      // Fallback: clear potentially corrupted data if needed, or just start fresh in memory
     }
   }, []);
 
