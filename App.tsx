@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
 
-  // Load data from local storage on mount
+  // Load data from local storage on mount with error handling
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('nutria_user');
@@ -26,7 +26,9 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error("Failed to load local data:", error);
-      // Fallback: clear potentially corrupted data if needed, or just start fresh in memory
+      // Optional: Clear corrupted data to allow app to start fresh
+      // localStorage.removeItem('nutria_user');
+      // localStorage.removeItem('nutria_meals');
     }
   }, []);
 
@@ -38,6 +40,7 @@ const App: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
+    // Always save meals state to local storage, even if empty (to handle deletions)
     localStorage.setItem('nutria_meals', JSON.stringify(meals));
   }, [meals]);
 
@@ -63,15 +66,17 @@ const App: React.FC = () => {
   };
 
   const handleDeleteMeal = (id: string) => {
-    setMeals(prev => prev.filter(meal => meal.id !== id));
-    if (selectedMeal?.id === id) {
-      setSelectedMeal(null);
-      setView('DASHBOARD');
+    if (window.confirm("Delete this meal log?")) {
+      setMeals(prev => prev.filter(meal => meal.id !== id));
+      if (selectedMeal?.id === id) {
+        setSelectedMeal(null);
+        setView('DASHBOARD');
+      }
     }
   };
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to log out? This will clear your local data.")) {
+    if (window.confirm("Are you sure you want to log out? This will clear your device's data for this app.")) {
       localStorage.removeItem('nutria_user');
       localStorage.removeItem('nutria_meals');
       setUser(null);
